@@ -14,18 +14,24 @@ So far you've built a full MVC Todo List Application. The only thing that is mis
 
 ## Exercise
 
-Your Application should allow a user to:
+### Part 1
+You'll need to add user accounts and authentication routes to your application. Specifically, your Application should allow a user to:
 - signup and create a new account
 - login with their email and password
 - logout when they have finished their session
-- peform CRUD actions on their Todos (i.e. filter the Todos shown and editable to only be those that belong to the user)
+- only CRUD Todos if they are logged in
+
+### Part 2
+Now that you have user accounts, you want to associate the users with the Todos they create and use that to restrict access. Specifically, your Application should allow a user to:
+- create a new Todo - the todo should store the user_id of it's creator (Mongoose Referencing)
+- view only their Todos
+- edit only their Todos
+- delete only their Todos
 
 Your Application should not allow a user to:
 - perform CRUD actions on the Todos of other users
 
-You'll need to decide whether to use Mongoose Embedding or Referecing for the Relationships. Spend 10 minutes discussing this with your Neighrbours to review the benefits of each and pick the right method for the job.
-
-Your new routes will include. 
+Your new routes will include.
 
 - `GET /auth/signup`
 - `POST /auth/signup`
@@ -33,8 +39,10 @@ Your new routes will include.
 - `POST /auth/login`
 - `GET /auth/logout`
 
-## Bonus:
+As you'll have the logged in user stored in the req.body, you do not need to have the user id in the URL. For example `/todos` should show the Todos for the logged in user, whoever that is.
 
-- Allow a user to transfer ownsership of a Todo to another user
-- List some stats about you application on the public home page, number of users, todos created etc
-- Allow a user to delete their account, which should then delete all of their Todos
+## Bonus:
+- Add a navigation bar that shows the name/email of the logged in user and shows buttons to login/logout/signup.
+- Allow a user to transfer ownership of a Todo to another user. This would be an option on your edit form.
+- List some stats about you application on the public home page, number of users, number of Todos etc.
+- Allow a user to delete their account, which should then delete all of their Todos.
