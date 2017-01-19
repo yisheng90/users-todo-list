@@ -6,7 +6,8 @@ let todoSchema = new mongoose.Schema({
     minLength: [5, 'Todo title must be at least 5 characters long']
   },
   description: String,
-  completed: Boolean
+  completed: Boolean,
+  user_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 })
 
 let Todo = mongoose.model('Todo', todoSchema)

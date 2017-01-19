@@ -2,6 +2,7 @@ let Todo = require('../models/todo')
 
 let todosController = {
   list: (req, res) => {
+    console.log('todo');
     Todo.find({}, (err, todos) => {
       if (err) throw err
       res.render('todo/index', { todos: todos })
@@ -23,7 +24,8 @@ let todosController = {
     let newTodo = new Todo({
       title: req.body.title,
       description: req.body.description,
-      completed: false
+      completed: false,
+      user_id: req.user_id
     })
     newTodo.save(function (err, savedEntry) {
       if (err) throw err

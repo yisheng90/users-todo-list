@@ -1,3 +1,12 @@
 .deleteForm {
   display: inline-block
 }
+
+body {
+  height: 100vh;
+}
+
+signup,
+login {
+  heigh: 100vh;
+}
