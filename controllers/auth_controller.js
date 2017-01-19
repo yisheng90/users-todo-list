@@ -4,7 +4,7 @@ const passport = require('../config/ppConfig')
 let authController = {
   signup: function (req, res) {
     console.log('started')
-    res.render('auth/signup') // view not done yet
+    res.render('auth/signup', {user: req.user}) // view not done yet
   },
   create: function (req, res) {
     User.create({
@@ -24,7 +24,7 @@ let authController = {
     })
   },
   login: function (req, res) {
-    res.render('auth/login') // view not done yet
+    res.render('auth/login', {user: req.user}) // view not done yet
   },
   loggedin: passport.authenticate('local', {
     successRedirect: '/todo',

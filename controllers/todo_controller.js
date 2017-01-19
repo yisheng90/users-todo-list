@@ -1,23 +1,27 @@
 let Todo = require('../models/todo')
+let User = require('../models/user')
 
 let todosController = {
   list: (req, res) => {
-    console.log('todo');
-    Todo.find({}, (err, todos) => {
+    console.log(req.user.id)
+    Todo.find({user_id: req.user.id})
+    .populate('user_id')
+    .exec((err, todos) => {
       if (err) throw err
-      res.render('todo/index', { todos: todos })
+      res.render('todo/index', { todos: todos, user: req.user})
     })
   },
 
   new: (req, res) => {
-    res.render('todo/create')
+    res.render('todo/create', {user: req.user})
   },
 
   listOne: (req, res) => {
-    Todo.findById(req.params.id, (err, todoItem) => {
-      if (err) throw err
-      res.render('todo/single-todo', { todoItem: todoItem })
-    })
+    Todo.findById(req.params.id)
+      .populate('user_id').exec((err, todoItem) => {
+        if (err) throw err
+        res.render('todo/single-todo', { todoItem: todoItem, user: req.user})
+      })
   },
 
   create: (req, res) => {
@@ -25,8 +29,9 @@ let todosController = {
       title: req.body.title,
       description: req.body.description,
       completed: false,
-      user_id: req.user_id
+      user_id: req.user.id
     })
+    console.log(req.user.id)
     newTodo.save(function (err, savedEntry) {
       if (err) throw err
       res.redirect('/todo')
@@ -34,27 +39,53 @@ let todosController = {
   },
 
   edit: (req, res) => {
-    Todo.findById(req.params.id, (err, todoItem) => {
+    Todo.findById(req.params.id)
+    .populate('user_id')
+    .exec((err, todoItem) => {
       if (err) throw err
-      res.render('todo/edit', { todoItem: todoItem })
+      res.render('todo/edit', { todoItem: todoItem, user: req.user})
     })
   },
 
   update: (req, res) => {
-    Todo.findOneAndUpdate({
-      id: req.params._id
-    }, {
-      title: req.body.title,
-      description: req.body.description,
-      completed: req.body.completed
-    }, (err, todoItem) => {
-      if (err) throw err
-      res.redirect('/todo/' + todoItem.id)
-    })
+    if (req.body.user !== req.user.email) {
+      User.findOne({email: req.body.user}, (err, user) => {
+        if (user !== null) {
+          Todo.findOneAndUpdate({
+            _id: req.params.id
+          }, {
+            title: req.body.title,
+            description: req.body.description,
+            completed: req.body.completed,
+            user_id: user.id
+          }).populate('user_id').exec((err, todoItem) => {
+            if (err) throw err
+            res.redirect('/todo')
+          })
+          return
+        } else {
+          req.flash('error', 'Transfer of ownership not succesful. Please enter a valid user email.')
+          res.redirect('/todo/'+req.params.id+'/edit')
+        }
+      })
+    } else {
+      Todo.findOneAndUpdate({
+        _id: req.params.id
+      }, {
+        title: req.body.title,
+        description: req.body.description,
+        completed: req.body.completed
+      }).populate('user_id').exec((err, todoItem) => {
+        if (err) throw err
+        res.redirect('/todo/' + todoItem.id)
+      })
+    }
   },
 
   delete: (req, res) => {
-    Todo.findByIdAndRemove(req.params.id, (err, todoItem) => {
+    Todo.findByIdAndRemove(req.params.id)
+    .populate('user_id')
+    .exec((err, todoItem) => {
       if (err) throw err
       res.redirect('/todo')
     })

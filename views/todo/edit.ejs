@@ -9,6 +9,10 @@
       <label for="description">Description</label>
       <textarea class="form-control" id="descriptionInput" rows="3" placeholder="Description" name="description"><%= todoItem.description %></textarea>
     </div>
+    <div class="form-group">
+      <label for="user">User</label>
+      <textarea class="form-control" id="descriptionInput"  placeholder="user" name="user"><%= todoItem.user_id.email %></textarea>
+    </div>
 
     <div class="form-group">
       <label for="completed">Completed</label>
