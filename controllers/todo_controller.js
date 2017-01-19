@@ -65,7 +65,7 @@ let todosController = {
           return
         } else {
           req.flash('error', 'Transfer of ownership not succesful. Please enter a valid user email.')
-          res.redirect('/todo/'+req.params.id+'/edit')
+          res.redirect('/todo/' + req.params.id + '/edit')
         }
       })
     } else {
