@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const session = require('express-session')
 const auth = require('./routes/auth_router')
 const todo = require('./routes/todo_router')
+
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const passport = require('./config/ppConfig')

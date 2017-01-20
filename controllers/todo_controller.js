@@ -4,9 +4,7 @@ let User = require('../models/user')
 let todosController = {
   list: (req, res) => {
     console.log(req.user.id)
-    Todo.find({user_id: req.user.id})
-    .populate('user_id')
-    .exec((err, todos) => {
+    Todo.find({user_id: req.user.id}, (err, todos) => {
       if (err) throw err
       res.render('todo/index', { todos: todos, user: req.user})
     })
@@ -18,10 +16,15 @@ let todosController = {
 
   listOne: (req, res) => {
     Todo.findById(req.params.id)
-      .populate('user_id').exec((err, todoItem) => {
-        if (err) throw err
-        res.render('todo/single-todo', { todoItem: todoItem, user: req.user})
-      })
+       .populate('user_id').exec((err, todoItem) => {
+         if (todoItem.user_id.equals(req.user.id)) {
+           if (err) throw err
+           res.render('todo/single-todo', { todoItem: todoItem, user: req.user})
+         } else {
+           req.flash('error', 'This is not your todo')
+           res.redirect('/todo')
+         }
+       })
   },
 
   create: (req, res) => {
@@ -42,8 +45,13 @@ let todosController = {
     Todo.findById(req.params.id)
     .populate('user_id')
     .exec((err, todoItem) => {
-      if (err) throw err
-      res.render('todo/edit', { todoItem: todoItem, user: req.user})
+      if (todoItem.user_id.equals(req.user.id)) {
+        if (err) throw err
+        res.render('todo/edit', { todoItem: todoItem, user: req.user})
+      } else {
+        req.flash('error', 'This is not your todo')
+        res.redirect('/todo')
+      }
     })
   },
 
@@ -59,7 +67,9 @@ let todosController = {
             completed: req.body.completed,
             user_id: user.id
           }).populate('user_id').exec((err, todoItem) => {
-            if (err) throw err
+            if (todoItem.user_id) {
+              if (err) throw err
+            }
             res.redirect('/todo')
           })
           return
